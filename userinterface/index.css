@@ -1,0 +1,68 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+body a{
+    font-weight: bolder;
+    text-decoration: none;
+}
+body a:hover{
+    color: #0f802d;
+}
+
+#searchForm {
+    margin: 20px;
+    text-align: center;
+}
+
+#songInfo {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Input fields */
+input[type="text"] {
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Search button */
+button[type="submit"] {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #1DB954;
+    color: white;
+    cursor: pointer;
+}
+
+/* Hover effect on search button */
+button[type="submit"]:hover {
+    background-color: #0f802d;
+}
+
+button#fetchLyricsBtn {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+button#fetchLyricsBtn:hover {
+    background-color: #45a049; /* Darker Green */
+}
+
+
+

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Song Information</title>
+    <link rel="stylesheet" href="index.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <a href="https://accounts.spotify.com/authorize?client_id=ac22634baebf4fe68e5675660e8d9153&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fcallback&scope=user-read-private%20user-read-email&state=yourUniqueState"> Please Click here to Authorize with Spotify First</a>
+
+    <form id="searchForm">
+        <input type="text" id="artistName" placeholder="Artist Name" required>
+        <input type="text" id="songName" placeholder="Song Name" required>
+        <button type="submit">Search</button>
+    </form>
+    
+    <div id="songInfo">
+        <!-- Song information will be displayed here -->
+    </div>
+
+    <button id="fetchLyricsBtn">Fetch Lyrics</button>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Parse the query string for access_token
+            const queryParams = new URLSearchParams(window.location.search);
+            const accessToken = queryParams.get('access_token');
+    
+            // Hide the 'Authorize with Spotify' link if we have an access token
+            if (accessToken) {
+                const authLink = document.querySelector('a.spotify-auth');
+                if (authLink) {
+                    authLink.style.display = 'none';
+                }
+            }
+    
+            // Add event listener to the search form
+            const searchForm = document.getElementById('searchForm');
+            searchForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+    
+                // Get the artist and song name from the input fields
+                const artistName = document.getElementById('artistName').value.trim();
+                const songName = document.getElementById('songName').value.trim();
+             
+    
+                if (!accessToken) {
+                    alert('No access token. Please authorize with Spotify first.');
+                    return;
+                }
+                try{
+                    const songData = await fetchSpotifyData(artistName, songName, accessToken);
+                }catch(error){
+                    console.error('Error:',error.message);
+                }
+                
+            });
+
+
+                const fetchLyricsBtn = document.getElementById('fetchLyricsBtn');
+                fetchLyricsBtn.addEventListener('click', async function() {
+                try {
+                    const artistName = document.getElementById('artistName').value.trim();
+                    const songName = document.getElementById('songName').value.trim();
+                    
+                    const response = await fetch(`/fetchlyrics?artistName=${encodeURIComponent(artistName)}&songName=${encodeURIComponent(songName)}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ artistName, songName })
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 404) {
+                            console.error('Lyrics not found.');
+                            displayLyricsNotFound();
+                        } else {
+                            console.error('Failed to fetch lyrics:', response.statusText);
+                            displayError();
+                        }
+                        return; // Exit the function early
+                    }
+
+                        const lyricsData = await response.json();
+                        if (lyricsData.lyrics && lyricsData.lyrics.trim() !== "") {
+                            displayLyrics(lyricsData.lyrics);
+                        } else {
+                            displayLyricsNotFound();
+                        }
+                    } catch (error) {
+                        console.error('Error fetching lyrics:', error.message);
+                        displayLyricsNotFound();
+                    }
+            });
+
+
+        });
+    
+        async function fetchSpotifyData(artistName, songName, accessToken) {
+            const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(artistName + ' ' + songName)}&type=track`;
+            try {
+                const searchResponse = await fetch(searchUrl, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                const searchData = await searchResponse.json();
+    
+                // Check if there are tracks in the response
+                if (searchData.tracks && searchData.tracks.items.length > 0) {
+                    const trackId = searchData.tracks.items[0].id;
+    
+                    const featureResponse = await fetch(`https://api.spotify.com/v1/audio-features/${trackId}`, {
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`
+                        }
+                    });
+    
+                    const featureData = await featureResponse.json();
+                    displaySongInfo(searchData.tracks.items[0], featureData);
+                } else {
+                    console.log('No tracks found');
+                    // Handle case where no tracks are found
+                }
+            } catch (error) {
+                console.error('Error fetching data from Spotify:', error);
+            }
+        }
+       
+    
+        function displaySongInfo(track, features) {
+            const songInfoDiv = document.getElementById('songInfo');
+            songInfoDiv.innerHTML = `
+                <img src="${track.album.images[0].url}" alt="Album Art" width="200">
+                <p>Song Name: ${track.name}</p>
+                <p>Artist: ${track.artists[0].name}</p>
+                <p>Album: ${track.album.name}</p>
+                <p>Danceability: ${features.danceability} (Scale: 0-1)</p>
+                <!-- You can add more track details here -->
+            `;
+        }
+        function displayLyrics(lyrics) {
+            const songInfoDiv = document.getElementById('songInfo');
+            songInfoDiv.innerHTML += `
+                <p>Lyrics:</p>
+                <pre>${lyrics}</pre>
+            `;
+        }
+        function displayLyricsNotFound() {
+            console.log('Lyrics not found');
+            const songInfoDiv = document.getElementById('songInfo');
+            songInfoDiv.innerHTML += `<p>Lyrics not found</p>`;
+        }
+
+    </script>
+    
+</body>
+</html>
