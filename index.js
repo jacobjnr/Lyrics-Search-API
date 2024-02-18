@@ -3,6 +3,7 @@ const axios = require('axios');
 const qs = require('qs');
 const querystring = require('querystring');
 const bodyParser = require('body-parser');
+const PORT = process.env.PORT || 3000;
 //require('dotenv').config({ path: './Spotify.env'});
 
 
@@ -24,7 +25,7 @@ const redirectUri = 'http://localhost:8000/callback'; // Ensure this matches the
 // Function to refresh the access token using the refresh token
 
 
-// Function to fetch song lyrics
+// Function to fetch song lyric
 
 
 app.get('/login', (req, res) => {
@@ -114,8 +115,8 @@ app.post('/fetchlyrics', async (req, res) => {
 
 
 
-const port = 8000;
-app.listen(port, () => {
+
+app.listen(PORT, () => {
     console.log(`Server listening at http://localhost:${port}`);
 });
 
