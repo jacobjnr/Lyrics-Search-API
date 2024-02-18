@@ -117,7 +117,7 @@ app.post('/fetchlyrics', async (req, res) => {
 
 
 app.listen(PORT, () => {
-    console.log(`Server listening at http://localhost:${port}`);
+    console.log(`Server listening at http://localhost:${PORT}`);
 });
 
 
