@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 const clientId = 'ac22634baebf4fe68e5675660e8d9153';
 const clientSecret = '7e1997e13d40490ba970daa7d96804ec';
 const apiKey = '071d8c285fc6b2f43f0cb33652253f10';
-const redirectUri = 'http://localhost:8000/callback'; // Ensure this matches the redirect URI in your Spotify app settings
+const redirectUri = 'https://lyrics-search-c04749de3114.herokuapp.com/callback'; // Ensure this matches the redirect URI in your Spotify app settings
 
 
 
@@ -62,7 +62,7 @@ app.get('/callback', async (req, res) => {
 
         const accessToken = response.data.access_token;
         // Use the access token to access Spotify API or redirect as needed
-        res.redirect(`http://localhost:8000?access_token=${accessToken}`);
+        res.redirect(`https://lyrics-search-c04749de3114.herokuapp.com?access_token=${accessToken}`);
     } catch (error) {
         console.error('Error during the token exchange', error.response.data);
         res.send('Error during the token exchange');
