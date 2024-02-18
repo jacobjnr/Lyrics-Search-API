@@ -4,7 +4,7 @@ const qs = require('qs');
 const querystring = require('querystring');
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3000;
-//require('dotenv').config({ path: './Spotify.env'});
+require('dotenv').config({ path: './Spotify.env'});
 
 
 const app = express();
@@ -15,9 +15,9 @@ app.use(bodyParser.json());
 
 
 // Replace these with your Spotify app's credentials
-const clientId = 'ac22634baebf4fe68e5675660e8d9153';
-const clientSecret = '7e1997e13d40490ba970daa7d96804ec';
-const apiKey = '071d8c285fc6b2f43f0cb33652253f10';
+const clientId = process.env.CLIENT_ID;
+const clientSecret = process.env.CLIENT_SECRET;
+const apiKey = process.env.RAPID_KEY;
 const redirectUri = 'https://lyrics-search-c04749de3114.herokuapp.com/callback'; // Ensure this matches the redirect URI in your Spotify app settings
 
 
