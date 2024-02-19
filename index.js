@@ -4,7 +4,7 @@ const qs = require('qs');
 const querystring = require('querystring');
 const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 3000;
-require('dotenv').config({ path: './Spotify.env'});
+//require('dotenv').config({ path: './Spotify.env'});
 
 
 const app = express();
