@@ -12,7 +12,9 @@ const app = express();
 app.use(express.static('./userinterface'));
 app.use(bodyParser.json());
 
-
+console.log('CLIENT_ID:', process.env.CLIENT_ID);
+console.log('CLIENT_SECRET:', process.env.CLIENT_SECRET);
+console.log('RAPID_KEY:', process.env.RAPID_KEY);
 
 // Replace these with your Spotify app's credentials
 const clientId = process.env.CLIENT_ID;
